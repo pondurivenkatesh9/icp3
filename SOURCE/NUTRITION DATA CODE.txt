@@ -1,0 +1,64 @@
+ <html>
+    <head>
+        <title>Nutrition</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.1/angular.min.js" type="application/javascript"></script>
+        <style>
+            .nutritionModule {
+                background: #20b2aa;
+                height: 300px;
+                width: 700px;
+                border: 1px dashed #ccc;
+                padding: 1em;
+            }
+        </style>
+    </head>
+
+    <body>
+    <div align="center">
+        <h2>NUTRITION REPORT</h2>
+        <div ng-app="nutrition" ng-controller="nutritionctrl">
+            <br>
+            item  <input type="text" ng-model="mydish" id="dish">
+            <br>
+            <br>
+            <button id="btn" ng-click="getnutrition()"> Get nutrition Report </button>
+            <br/>
+            <br/>
+            <div class="nutritionModule">
+                <p class="nutrition1" ng-bind-html-unsafe="nutrition12.html"></p>
+                <p ng-bind-html-unsafe="data.html"></p>
+            </div>
+        </div>
+    </div>
+    </body>
+
+<script>
+    angular.module('nutrition', [])
+        .controller('nutritionctrl', function($scope, $http) {
+
+            $scope.getnutrition = function() {
+                var dish=$scope.mydish;
+
+                $http.get('https://api.edamam.com/api/nutrition-data?app_id=4a5fe951&app_key=df484aca02909c3b25f60f21dd7aa13f&ingr='+dish).success(function(data) {
+
+
+                    calories = data.calories;
+                    weight = data.totalWeight;
+                    healthLabel = data.healthLabels;
+                    $scope.nutrition12 = {
+                        html: " CALORIES:" + calories + "<br><br> WEIGHT: " + weight + "<br><br> HEALTH LABEL:"+ healthLabel
+                    }
+
+                    $scope.data = {
+                        html: "<a href=\"https://stream.watsonplatform.net/text-to-speech/api/v1/synthesize?username=b234d9a3-d86a-4476-9c56-07173e317489&password=0pmyS3pDPqUv&text=" + " total calories is " + calories + " and total weight is " + weight + "health label is" + healthLabel+ "\" >click here </a>"
+                    }
+
+
+                })
+            }
+
+        });
+</script>
+
+
+</html>
